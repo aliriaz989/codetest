@@ -1,0 +1,18 @@
+What's good in the code : 
+
+1 - The best thing about the code is that Repositorypattern is integrated to separate the business logic from accessible data logic.
+2 - proper dependancy injection is implemented.
+3 - Proper naming convention is implemented to the variables.
+4 - properly readable and nested code.
+5 - properly logging is implemented.
+6 - Event driven architecture approach is good approach like firing event named JobWasCreated. 
+
+
+What's bad in it.
+
+1 - No validation is implemented. There shoud be properly validation implementation.
+2 - Some of the method names are not good to understand like jobToData() , saveJobEmailInfo().
+3 - Store() method is having too many if else conditions which makes code hard to understand for a developer.
+4 - Comments should be properly understandable.
+5 - Some functions have clearly descriptive names and some have not. like show method should be more specific I think.
+6 - In distanceFeed() function, some logic is inside the controller it should be shifted to repository.

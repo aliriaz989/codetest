@@ -6,6 +6,7 @@ use DTApi\Models\Job;
 use DTApi\Http\Requests;
 use DTApi\Models\Distance;
 use Illuminate\Http\Request;
+use Illuminate\Http\Requests\StoreBookingRequest;
 use DTApi\Repository\BookingRepository;
 
 /**
@@ -72,6 +73,20 @@ class BookingController extends Controller
         return response($response);
 
     }
+
+    // start of code
+    // my updated example of store method. This way, the validation is cleanly separated from the business logic of the repository, and you can easily manage validation rules and messages 
+    public function store_updated(StoreBookingRequest $request)
+    {
+        // The request will be validated at this point and you can validate other functions like that
+        $data = $request->validated();
+
+        $response = $this->repository->store($request->__authenticatedUser, $data);
+
+        return response($response);
+    }
+    // end of code
+
 
     /**
      * @param $id
@@ -190,6 +205,26 @@ class BookingController extends Controller
         $response = $this->repository->getPotentialJobs($user);
 
         return response($response);
+    }
+
+    public function distanceFeed_updated(Request $request)
+    {
+        $data = $request->all();
+
+        // there should be a validation request class implementation. this can also be used here.
+        $validator = Validator::make($data, [
+            'jobid' => 'required',
+            'admincomment' => 'required_if:flagged,true',
+        ]);
+
+        if ($validator->fails()) {
+            return response(['error' => 'Validation failed: ' . $validator->errors()], 400);
+        }
+        // all other logic should be shifted here to repository function here
+        $this->repository->updateDistanceAndTime($data);
+        $this->repository->updateJobFlags($data);
+
+        return response('Record updated!');
     }
 
     public function distanceFeed(Request $request)

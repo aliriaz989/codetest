@@ -128,6 +128,31 @@ class BookingRepository extends BaseRepository
     public function store($user, $data)
     {
 
+
+
+    // start of approach which can elimitnate most of our if - else stattements to simplify code
+    // We can add this piece of code to simplify the code using array approach
+    $validations = [
+        'from_language_id'     => isset($data['from_language_id']) ? true : ['status' => 'fail', 'message' => "Du måste fylla in alla fält", 'field_name' => "from_language_id"],
+        'due_date'             => $data['immediate'] == 'no' && empty($data['due_date']) ? ['status' => 'fail', 'message' => "Du måste fylla in alla fält", 'field_name' => 'due_date'] : true,
+        'due_time'             => $data['immediate'] == 'no' && empty($data['due_time']) ? ['status' => 'fail', 'message' => "Du måste fylla in alla fält", 'field_name' => 'due_time'] : true,
+        'customer_phone_type'  => $data['immediate'] == 'no' && !isset($data['customer_phone_type']) && !isset($data['customer_physical_type']) ? ['status' => 'fail', 'message' => "Du måste göra ett val här", 'field_name' => 'customer_phone_type'] : true,
+        'duration'             => empty($data['duration']) ? ['status' => 'fail', 'message' => "Du måste fylla in alla fält", 'field_name' => 'duration'] : true
+    ];
+
+    // Return failure response if any validation fails
+    foreach ($validations as $validation) {
+        if (is_array($validation)) {
+            return $validation;
+        }
+    }
+     
+    // end of approach
+
+
+
+
+
         $immediatetime = 5;
         $consumer_type = $user->userMeta->consumer_type;
         if ($user->user_type == env('CUSTOMER_ROLE_ID')) {
@@ -324,7 +349,7 @@ class BookingRepository extends BaseRepository
      * @param $job
      * @return array
      */
-    public function jobToData($job)
+    public function jobData($job)
     {
 
         $data = array();            // save job's information to data for sending Push
